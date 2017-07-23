@@ -1,0 +1,13 @@
+---
+# defaults file for sshd
+
+sshd_config_file:
+  - sshd_config.j2
+
+sshd_packages:
+  - openssh-server
+
+sshd_additional_packages: []
+
+sshd_port: 22
+sshd_address: 0.0.0.0

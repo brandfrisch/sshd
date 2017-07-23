@@ -1,0 +1,17 @@
+---
+
+- hosts: all
+  pre_tasks:
+
+    - name: Touch auth.log
+      file:
+        path: "{{ item }}"
+        owner: root
+        group: adm
+        state: touch
+      with_items:
+        - /var/log/auth.log
+      changed_when: false
+
+  roles:
+    - sshd
