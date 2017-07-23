@@ -1,4 +1,4 @@
-sshd
+sshd [![Build Status](https://travis-ci.org/brandfrisch/sshd.svg?branch=master)](https://travis-ci.org/brandfrisch/sshd)
 =========
 
 This is a rule to setup sshd on a unix system
