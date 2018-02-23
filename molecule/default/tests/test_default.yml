@@ -1,0 +1,29 @@
+---
+package:
+  openssh-server:
+    installed: true
+port:
+  tcp:22:
+    listening: true
+    ip:
+      - 0.0.0.0
+service:
+  ssh:
+    enabled: true
+    running: true
+  sshd:
+    enabled: true
+    running: true
+user:
+  sshd:
+    exists: true
+    groups:
+      - nogroup
+    home: /var/run/sshd
+    shell: /usr/sbin/nologin
+group:
+  ssh:
+    exists: true
+process:
+  sshd:
+    running: true
