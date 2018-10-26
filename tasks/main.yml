@@ -12,6 +12,27 @@
     - package
     - sshd
 
+- name: Set correct paths
+  when: ansible_distribution_version != "18.04"
+  set_fact:
+    sshd_privilege_separation_path: /var/run/sshd
+
+- name: Set correct paths
+  when: ansible_distribution_version == "18.04"
+  set_fact:
+    sshd_privilege_separation_path: /run/sshd
+
+- name: Create Folder for privilege separation
+  file:
+    path: "{{sshd_privilege_separation_path}}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  tags:
+    - setup
+    - sshd
+
 - name: Set config
   template:
     src: "{{ item }}"
