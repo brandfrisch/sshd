@@ -19,7 +19,6 @@ user:
     exists: true
     groups:
       - nogroup
-    home: /var/run/sshd
     shell: /usr/sbin/nologin
 group:
   ssh:

@@ -12,6 +12,7 @@ Protocol 2
 HostKey /etc/ssh/ssh_host_rsa_key
 HostKey /etc/ssh/ssh_host_ed25519_key
 
+{% if ansible_distribution_version != "18.04" %}
 # Privilege Separation is turned on for security
 UsePrivilegeSeparation yes
 
@@ -19,16 +20,19 @@ UsePrivilegeSeparation yes
 KeyRegenerationInterval 3600
 ServerKeyBits 1024
 
+{% endif %}
 # Logging
 SyslogFacility AUTH
 LogLevel INFO
 
 # Authentication:
 LoginGraceTime 120
-PermitRootLogin without-password
+PermitRootLogin no
 StrictModes yes
 
+{% if ansible_distribution_version != "18.04" %}
 RSAAuthentication yes
+{% endif %}
 PubkeyAuthentication yes
 
 #AuthorizedKeysFile     %h/.ssh/authorized_keys
@@ -36,8 +40,10 @@ PubkeyAuthentication yes
 # Don't read the user's ~/.rhosts and ~/.shosts files
 IgnoreRhosts yes
 
+{% if ansible_distribution_version != "18.04" %}
 # For this to work you will also need host keys in /etc/ssh_known_hosts
 RhostsRSAAuthentication no
+{% endif %}
 
 # similar for protocol version 2
 HostbasedAuthentication no
@@ -63,7 +69,6 @@ X11Forwarding no
 X11DisplayOffset 10
 PrintMotd no
 PrintLastLog yes
-TCPKeepAlive yes
 #UseLogin no
 
 #MaxStartups 10:30:60
@@ -76,9 +81,22 @@ Subsystem sftp /usr/lib/openssh/sftp-server
 
 UsePAM yes
 
-# Diffiation from standard: no restriction on group
-AllowGroups ssh
-
-KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+{% if ansible_distribution_version != "18.04" %}
+KexAlgorithms curve25519-sha256@libssh.org
 Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
+{% endif %}
+
+# Ensure SSH PermitUserEnvironment is disabled
+# Permitting users the ability to set environment variables through the SSH daemon
+# could potentially allow users to bypass security controls (e.g. setting an execution path that has ssh executing trojan'd programs)
+PermitUserEnvironment no
+
+# Limits the number of multiplexed ssh sessions you can have over a single ssh session
+MaxSessions 10
+
+# Ensure SSH Idle Timeout Interval is configured
+ClientAliveCountMax 0
+
+# Session will be terminated after 300 seconds = 5 minutes (idle)
+ClientAliveInterval 300
