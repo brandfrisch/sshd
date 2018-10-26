@@ -12,17 +12,6 @@
     - package
     - sshd
 
-- name: Create Folder for privilege separation
-  file:
-    path: /var/run/sshd
-    owner: root
-    group: root
-    mode: 0750
-    state: directory
-  tags:
-    - setup
-    - sshd
-
 - name: Set config
   template:
     src: "{{ item }}"
