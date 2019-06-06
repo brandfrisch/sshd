@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       - image: docker:stable
-    working_directory: ~/sshd
+    working_directory: ~/ansible-sshd
 
     steps:
 
@@ -12,7 +12,7 @@ jobs:
           docker_layer_caching: true
 
       - checkout:
-          path: ~/sshd
+          path: ~/ansible-sshd
 
       - run:
           name: "Install pip"
@@ -23,9 +23,19 @@ jobs:
           name: "Upgrade pip"
           command: "pip install --upgrade pip"
 
+      - restore_cache:
+          key: python-requirements-V1-{{ checksum "requirements.txt" }}
+
       - run:
-          name: "Install python dependencies"
-          command: "pip install -r requirements.txt"
+          name: Install Python dependencies
+          command: pip install -r requirements.txt
+
+      - save_cache:
+          key: python-requirements-V1-{{ checksum "requirements.txt" }}
+          paths:
+            - "~/.cache/pip"
+            - "/usr/local/lib/python2.7/site-packages"
+            - "/usr/local/lib/site-python"
 
       - run:
           name: "run tests"
@@ -34,19 +44,19 @@ jobs:
                     export DOCKER_CERT_PATH_CERT=$DOCKER_CERT_PATH/cert.pem &&
                     export DOCKER_CERT_PATH_KEY=$DOCKER_CERT_PATH/key.pem &&
                     export DOCKER_SSL_VERSION=SSLv23 &&
-                    unset DOCKER_TLS_VERIFY &&
+                    export MOLECULE_DEBUG=false &&
                     molecule test"
 
   release:
     docker:
       - image: circleci/node:8
 
-    working_directory: ~/sshd
+    working_directory: ~/ansible-sshd
 
     steps:
 
       - checkout:
-          path: ~/sshd
+          path: ~/ansible-sshd
 
       - run: "npm install @semantic-release/changelog &&
               npm install @semantic-release/git &&

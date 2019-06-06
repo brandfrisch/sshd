@@ -24,7 +24,7 @@
 
 - name: Create Folder for privilege separation
   file:
-    path: "{{sshd_privilege_separation_path}}"
+    path: "{{ sshd_privilege_separation_path }}"
     owner: root
     group: root
     mode: 0755

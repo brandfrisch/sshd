@@ -1,9 +1,9 @@
 ---
 galaxy_info:
   author: Alexander Jäger
-  description: your description
-  company: Brandfrisch
-  license: Apache License 2.0
+  description: A role to install sshd
+  company: The Fittest UG (haftungsbeschraenkt)
+  license: MIT
   min_ansible_version: 2.4
   platforms:
     - name: Ubuntu
